@@ -33,4 +33,4 @@ COPY . .
 RUN ls -la /app/main.py
 
 # Запуск
-CMD ["python", "main.py"]
+CMD ["python", "app/main.py"]
