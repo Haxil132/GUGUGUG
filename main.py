@@ -20,6 +20,51 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 import os
 import hashlib
+import subprocess
+import sys
+
+def install_dependencies():
+    """Автоматическая установка всех необходимых зависимостей"""
+    required_packages = [
+        'requests',
+        'beautifulsoup4',
+        'python-telegram-bot',
+        'selenium',
+        'webdriver-manager',
+        'lxml'
+    ]
+    
+    for package in required_packages:
+        try:
+            if package == 'beautifulsoup4':
+                __import__('bs4')
+            elif package == 'python-telegram-bot':
+                __import__('telegram')
+            elif package == 'webdriver-manager':
+                __import__('webdriver_manager')
+            else:
+                __import__(package)
+            print(f"✓ {package} уже установлен")
+        except ImportError:
+            print(f"⏳ Устанавливаю {package}...")
+            try:
+                subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+                print(f"✓ {package} успешно установлен")
+            except subprocess.CalledProcessError:
+                print(f"✗ Ошибка установки {package}")
+                return False
+    
+    print("✓ Все зависимости установлены!")
+    return True
+
+# Проверяем и устанавливаем зависимости перед запуском
+if __name__ == '__main__':
+    print("Проверка зависимостей...")
+    if install_dependencies():
+        print("Зависимости готовы, запускаем бота...")
+    else:
+        print("Не удалось установить все зависимости. Проверьте подключение к интернету.")
+        sys.exit(1)
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
